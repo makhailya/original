@@ -22,4 +22,4 @@ def test_get_mask_account(account_number, expected):
 
 
 def test_get_mask_account_short():
-    assert get_mask_account("123") == "123"  # слишком короткий номерм
+    assert get_mask_account("123") == "123"  # слишком короткий номер

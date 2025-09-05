@@ -1,4 +1,4 @@
-from typing import list, dict
+from typing import List, Dict
 
 
 def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
@@ -27,14 +27,15 @@ print(filter_by_state(transactions, "CANCELED"))
 #  {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}]
 
 
-def sort_by_date(data: list[dict], descending: bool = True) -> list[dict]:
+def sort_by_date(operations: List[Dict], reverse: bool = False) -> List[Dict]:
     """
-    Сортирует список словарей по ключу 'date'.
-    :param data: список словарей с транзакциями
-    :param descending: порядок сортировки (по умолчанию True — убывание)
-    :return: новый список словарей, отсортированный по дате
+    Сортирует список операций по дате.
+
+    :param operations: Список операций (каждая операция — dict с ключом 'date')
+    :param reverse: Если True — сортировка по убыванию (новые первыми).
+    :return: Отсортированный список операций.
     """
-    return sorted(data, key=lambda x: x.get("date", ""), reverse=descending)
+    return sorted(operations, key=lambda op: op["date"], reverse=reverse)
 
 
 print(sort_by_date(transactions))

@@ -3,7 +3,7 @@
 с использованием маскировки номеров.
 """
 
-from masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_card_number, get_mask_account
 
 
 def mask_account_card(info: str) -> str:
