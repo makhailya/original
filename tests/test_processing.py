@@ -20,7 +20,8 @@ def test_filter_by_state_empty(sample_operations):
 
 def test_sort_by_date_desc(sample_operations):
     result = sort_by_date(sample_operations, reverse=True)
-    assert result[0]["id"] == 1
+    dates = [op["date"] for op in result]
+    assert dates == sorted(dates, reverse=True)
 
 
 def test_sort_by_date_asc(sample_operations):
