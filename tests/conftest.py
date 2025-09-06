@@ -4,6 +4,8 @@ import os
 
 # добавляем src в PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+
+
 @pytest.fixture
 def sample_operations():
     return [

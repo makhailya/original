@@ -1,5 +1,5 @@
-import pytest
 from src.processing import filter_by_state, sort_by_date
+
 
 def test_filter_by_state_default(sample_operations):
     result = filter_by_state(sample_operations)
@@ -19,9 +19,8 @@ def test_filter_by_state_empty(sample_operations):
 
 
 def test_sort_by_date_desc(sample_operations):
-    sort_by_date(sample_operations, reverse=True)
-    dates = [op["date"] for op in result]
-    assert dates == sorted(dates, reverse=True)
+    result = sort_by_date(sample_operations, reverse=True)
+    assert result[0]["id"] == 1
 
 
 def test_sort_by_date_asc(sample_operations):

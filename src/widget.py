@@ -1,9 +1,9 @@
+import datetime
+from masks import get_mask_card_number, get_mask_account
 """
 Модуль для отображения информации о картах и счетах
 с использованием маскировки номеров.
 """
-
-from src.masks import get_mask_card_number, get_mask_account
 
 
 def mask_account_card(info: str) -> str:
@@ -29,9 +29,6 @@ def mask_account_card(info: str) -> str:
         masked_number = get_mask_card_number(number)
 
     return f"{name} {masked_number}"
-
-
-from datetime import datetime
 
 
 def get_date(date_str: str) -> str:
