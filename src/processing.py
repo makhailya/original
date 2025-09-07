@@ -28,10 +28,3 @@ def sort_by_date(operations: List[Dict], reverse: bool = False) -> List[Dict]:
     :return: Отсортированный список операций.
     """
     return sorted(operations, key=lambda op: op["date"], reverse=reverse)
-
-# Примеры:
-#print(filter_by_state(transactions))
-#print(filter_by_state(transactions, "CANCELED"))
-#
-#print(sort_by_date(transactions, reverse=False))  # по возрастанию
-#print(sort_by_date(transactions, reverse=True))   # по убыванию
