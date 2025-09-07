@@ -53,3 +53,17 @@ print(masked_card)  # 7000 79** **** 6361
 Установите зависимости:
 ```bash
 pip install -r requirements.txt
+---
+
+## 🌀 Generators
+
+В проекте реализован модуль `generators`, содержащий удобные генераторы для работы с транзакциями и номерами карт.
+
+### `filter_by_currency`
+Фильтрация транзакций по валюте:
+```python
+from generators import filter_by_currency
+
+usd_transactions = filter_by_currency(transactions, "USD")
+for tx in usd_transactions:
+    print(tx)
