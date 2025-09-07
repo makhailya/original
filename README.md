@@ -33,3 +33,23 @@ from masks import get_mask_card_number
 
 masked_card = get_mask_card_number("7000792289606361")
 print(masked_card)  # 7000 79** **** 6361
+
+---
+
+## ✅ Тестирование
+
+В проекте используется библиотека **pytest** для модульного тестирования.
+
+### Покрытие тестами
+Тестами проверяются функции:
+- `get_mask_card_number`
+- `get_mask_account`
+- `mask_account_card`
+- `get_date`
+- `filter_by_state`
+- `sort_by_date`
+
+### Запуск тестов
+Установите зависимости:
+```bash
+pip install -r requirements.txt
