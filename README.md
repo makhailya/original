@@ -67,3 +67,10 @@ from generators import filter_by_currency
 usd_transactions = filter_by_currency(transactions, "USD")
 for tx in usd_transactions:
     print(tx)
+## Тестирование и покрытие кода
+
+Для запуска тестов используется `pytest` с плагином `pytest-cov`.
+
+### Установка зависимостей
+```bash
+pip install pytest pytest-cov
