@@ -1,5 +1,7 @@
 from unittest.mock import patch
+
 from external_api import convert_to_rub
+
 
 @patch("external_api.requests.get")
 def test_convert_usd_to_rub(mock_get):

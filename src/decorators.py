@@ -1,6 +1,6 @@
+import sys
 from functools import wraps
 from typing import Any, Callable, Optional
-import sys
 
 
 def log(filename: Optional[str] = None):
