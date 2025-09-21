@@ -3,13 +3,14 @@ from functools import wraps
 from typing import Any, Callable, Optional
 
 
-def log(filename: Optional[str] = None):
+def log(filename: Optional[str] = None) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """
     Декоратор для логирования работы функций.
 
     :param filename: путь к файлу логов (если None — вывод в консоль).
+    :return: функция-декоратор
     """
-    def decorator(func: Callable) -> Callable:
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
