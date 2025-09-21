@@ -1,46 +1,38 @@
-"""
-Модуль для маскировки номеров карт и счетов.
-"""
+import logging
+
+# Настройка логирования
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+file_handler = logging.FileHandler("logs/masks.log", mode="w", encoding="utf-8")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 def get_mask_card_number(card_number: str) -> str:
     """
-    Возвращает маску для номера банковской карты.
-
-    Первые 6 и последние 4 цифры остаются видимыми,
-    а остальные заменяются на звездочки.
-    Формат: XXXX XX** **** XXXX
-
-    Если номер слишком короткий (меньше 10 цифр), возвращается как есть.
-
-    :param card_number: Полный номер карты в виде строки.
-    :return: Маскированный номер карты или исходный номер, если он слишком короткий.
+    Маскирует номер карты.
+    Первые 6 и последние 4 цифры остаются видимыми.
     """
-    if not card_number.isdigit():
+    if len(card_number) < 10 or not card_number.isdigit():
+        logger.error("Некорректный номер карты: %s", card_number)
         raise ValueError("Некорректный номер карты")
 
-    if len(card_number) < 10:  # слишком короткий номер — не маскируем
-        return card_number
-
-    return f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
+    masked = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
+    logger.debug("Маскирование карты %s -> %s", card_number, masked)
+    return masked
 
 
 def get_mask_account(account_number: str) -> str:
     """
-    Возвращает маску для номера банковского счета.
-
-    Показывает только последние 4 цифры с двумя звездочками перед ними.
-    Формат: **XXXX
-
-    Если номер слишком короткий (меньше 4 цифр), возвращается как есть.
-
-    :param account_number: Полный номер счета в виде строки.
-    :return: Маскированный номер счета или исходный номер, если он слишком короткий.
+    Маскирует номер счёта.
+    Показывает только последние 4 цифры.
     """
-    if not account_number.isdigit():
-        raise ValueError("Некорректный номер счета")
+    if len(account_number) < 4 or not account_number.isdigit():
+        logger.error("Некорректный номер счёта: %s", account_number)
+        raise ValueError("Некорректный номер счёта")
 
-    if len(account_number) < 4:  # слишком короткий номер — не маскируем
-        return account_number
-
-    return f"**{account_number[-4:]}"
+    masked = f"**{account_number[-4:]}"
+    logger.debug("Маскирование счёта %s -> %s", account_number, masked)
+    return masked
