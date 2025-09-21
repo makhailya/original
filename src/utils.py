@@ -1,24 +1,36 @@
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
+# Настройка логирования
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
-def load_transactions(file_path: str) -> list[dict[str, Any]]:
+file_handler = logging.FileHandler("logs/utils.log", mode="w", encoding="utf-8")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+
+def read_transactions(file_path: str) -> list[dict[str, Any]]:
     """
-    Загружает список транзакций из JSON-файла.
-    :param file_path: путь до файла
-    :return: список словарей с транзакциями
+    Читает JSON-файл с транзакциями.
+    Возвращает список транзакций или пустой список при ошибке.
     """
     path = Path(file_path)
-    if not path.exists() or path.stat().st_size == 0:
+    if not path.exists():
+        logger.error("Файл не найден: %s", file_path)
         return []
 
     try:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
-            if isinstance(data, list):
-                return data
-    except (json.JSONDecodeError, OSError):
+            if not isinstance(data, list):
+                logger.error("Некорректный формат данных в файле: %s", file_path)
+                return []
+            logger.debug("Успешно загружено %d транзакций из %s", len(data), file_path)
+            return data
+    except json.JSONDecodeError as e:
+        logger.error("Ошибка чтения JSON в %s: %s", file_path, e)
         return []
-
-    return []
