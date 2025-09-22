@@ -1,30 +1,39 @@
+# src/file_reader.py
+from __future__ import annotations
+from typing import List, Dict, Any
+from pathlib import Path
+
 import pandas as pd
-from typing import List, Dict
 
 
-def read_transactions_csv(path: str) -> List[Dict]:
+def read_transactions_csv(path: str) -> List[Dict[str, Any]]:
     """
-    Считывает транзакции из CSV-файла.
-
-    :param path: путь к CSV-файлу
-    :return: список транзакций (каждая строка как словарь)
+    Считывает транзакции из CSV-файла и возвращает список словарей.
+    Если файл не найден или пуст/невалиден — возвращает пустой список.
     """
+    file = Path(path)
+    if not file.exists():
+        return []
+
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(file)
+        # Если дата в колонках — можно дополнительно обработать типы
         return df.to_dict(orient="records")
-    except (FileNotFoundError, pd.errors.EmptyDataError):
+    except (pd.errors.EmptyDataError, pd.errors.ParserError, OSError):
         return []
 
 
-def read_transactions_excel(path: str) -> List[Dict]:
+def read_transactions_excel(path: str) -> List[Dict[str, Any]]:
     """
-    Считывает транзакции из Excel-файла.
+    Считывает транзакции из Excel (.xlsx) и возвращает список словарей.
+    Если файл не найден или невалиден — возвращает пустой список.
+    """
+    file = Path(path)
+    if not file.exists():
+        return []
 
-    :param path: путь к Excel-файлу
-    :return: список транзакций (каждая строка как словарь)
-    """
     try:
-        df = pd.read_excel(path)
+        df = pd.read_excel(file, engine="openpyxl")
         return df.to_dict(orient="records")
-    except (FileNotFoundError, ValueError):
+    except (ValueError, OSError):
         return []
