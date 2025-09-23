@@ -1,4 +1,3 @@
-import pytest
 import pandas as pd
 from src.file_reader import read_transactions_csv, read_transactions_excel
 
