@@ -1,22 +1,16 @@
-[project]
+[tool.poetry]
 name = "pythonproject2"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "Your Name",email = "you@example.com"}
-]
+description = "Учебный проект для обработки банковских данных"
+authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "python-dotenv (>=1.1.1,<2.0.0)",
-    "pandas (>=2.3.2,<3.0.0)",
-    "openpyxl (>=3.1.5,<4.0.0)"
-]
+packages = [{ include = "src" }]
 
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.dependencies]
+python = ">=3.13"
+python-dotenv = "^1.0.1"
+pandas = "^2.3.2"
+openpyxl = "^3.1.5"
 
 [tool.poetry.group.lint.dependencies]
 flake8 = "^7.3.0"
@@ -24,10 +18,13 @@ mypy = "^1.17.1"
 isort = "^6.0.1"
 black = "^25.1.0"
 
-
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.18.2"
 types-requests = "^2.32.4.20250913"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 119
@@ -40,6 +37,3 @@ line_length = 119
 disallow_untyped_defs = true
 warn_return_any = true
 exclude = "venv"
-
-pandas = "^2.2.0"
-openpyxl = "^3.1.2"
