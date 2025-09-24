@@ -1,4 +1,5 @@
 from pprint import pprint
+
 from src.file_reader import read_transactions_csv, read_transactions_excel
 
 """
@@ -8,7 +9,7 @@ from src.file_reader import read_transactions_csv, read_transactions_excel
     • logs/utils.log
 """
 
-from src.masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 from src.utils import read_transactions
 
 
