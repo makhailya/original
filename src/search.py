@@ -16,7 +16,7 @@ def process_bank_operations(data: list[dict[str, Any]], categories: list[str]) -
     Считает количество операций по категориям.
     """
     descriptions = [item.get("description", "") for item in data]
-    counter = Counter()
+    counter: Counter[str] = Counter()
 
     for category in categories:
         counter[category] = sum(1 for desc in descriptions if category.lower() in desc.lower())
