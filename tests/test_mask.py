@@ -1,6 +1,6 @@
 import pytest
 
-from src.masks import get_mask_account, get_mask_card_number
+from src.masks import get_mask_card_number, get_mask_account
 
 
 @pytest.mark.parametrize("card_number, expected", [
@@ -12,7 +12,8 @@ def test_get_mask_card_number(card_number, expected):
 
 
 def test_get_mask_card_number_short():
-    assert get_mask_card_number("1234") == "1234"  # слишком короткий номер не маскируется
+    with pytest.raises(ValueError):
+        get_mask_card_number("1234")  # слишком короткий номер не маскируется
 
 
 @pytest.mark.parametrize("account_number, expected", [
@@ -24,4 +25,5 @@ def test_get_mask_account(account_number, expected):
 
 
 def test_get_mask_account_short():
-    assert get_mask_account("123") == "123"  # слишком короткий номер
+    with pytest.raises(ValueError):
+        get_mask_account("123")  # слишком короткий номер
