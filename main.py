@@ -1,47 +1,63 @@
-from pprint import pprint
-
-from src.file_reader import read_transactions_csv, read_transactions_excel
-
-"""
-Тестовый скрипт для проверки работы функций и логирования.
-После запуска смотри файлы:
-    • logs/masks.log
-    • logs/utils.log
-"""
-
-from src.masks import get_mask_account, get_mask_card_number
 from src.utils import read_transactions
+from src.file_reader import read_transactions_csv, read_transactions_excel
+from src.processing import filter_by_state, sort_by_date
+from src.search import process_bank_search
 
 
 def main() -> None:
-    # Проверка маскировки карты
-    print(get_mask_card_number("7000792289606361"))
+    print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
+    print("Выберите необходимый пункт меню:")
+    print("1. Получить информацию о транзакциях из JSON-файла")
+    print("2. Получить информацию о транзакциях из CSV-файла")
+    print("3. Получить информацию о транзакциях из XLSX-файла")
 
-    # Проверка маскировки счёта
-    print(get_mask_account("73654108430135874305"))
+    choice = input("Ваш выбор: ")
+    if choice == "1":
+        print("Для обработки выбран JSON-файл.")
+        transactions = read_transactions("data/operations.json")
+    elif choice == "2":
+        print("Для обработки выбран CSV-файл.")
+        transactions = read_transactions_csv("data/transactions.csv")
+    elif choice == "3":
+        print("Для обработки выбран XLSX-файл.")
+        transactions = read_transactions_excel("data/transactions_excel.xlsx")
+    else:
+        print("Некорректный выбор.")
+        return
 
-    # Чтение JSON с транзакциями
-    transactions = read_transactions("data/operations.json")
-    print(transactions)
+    # фильтрация по статусу
+    statuses = ["EXECUTED", "CANCELED", "PENDING"]
+    while True:
+        status = input(f"Введите статус ({', '.join(statuses)}): ").upper()
+        if status in statuses:
+            transactions = filter_by_state(transactions, status)
+            print(f'Операции отфильтрованы по статусу "{status}"')
+            break
+        else:
+            print(f'Статус операции "{status}" недоступен.')
 
+    if not transactions:
+        print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+        return
 
-if __name__ == "__main__":
-    main()
+    # сортировка
+    if input("Отсортировать операции по дате? Да/Нет ").lower() == "да":
+        order = input("Отсортировать по возрастанию или по убыванию? ").lower()
+        transactions = sort_by_date(transactions, reverse=(order == "по убыванию"))
 
+    # только рублевые
+    if input("Выводить только рублевые транзакции? Да/Нет ").lower() == "да":
+        transactions = [tx for tx in transactions if tx.get("operationAmount", {}).get("currency", {}).get("code") == "RUB"]
 
-# main.py
-def main() -> None:
-    csv_path = "data/transactions.csv"
-    xlsx_path = "data/transactions_excel.xlsx"
+    # поиск по слову
+    if input("Отфильтровать список транзакций по слову в описании? Да/Нет ").lower() == "да":
+        word = input("Введите слово: ")
+        transactions = process_bank_search(transactions, word)
 
-    print("=== CSV ===")
-    transactions_csv = read_transactions_csv(csv_path)
-    pprint(transactions_csv[:5])  # печатаем первые 5 записей
-
-    print("\n=== XLSX ===")
-    transactions_xlsx = read_transactions_excel(xlsx_path)
-    pprint(transactions_xlsx[:5])
-
-
-if __name__ == "__main__":
-    main()
+    # вывод
+    print("Распечатываю итоговый список транзакций...")
+    print(f"\nВсего банковских операций в выборке: {len(transactions)}\n")
+    for tx in transactions:
+        print(f"{tx.get('date', '')} {tx.get('description', '')}")
+        print(f"Сумма: {tx.get('operationAmount', {}).get('amount')} "
+              f"{tx.get('operationAmount', {}).get('currency', {}).get('code')}\n")
