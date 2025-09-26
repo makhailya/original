@@ -2,6 +2,7 @@ from src.file_reader import read_transactions_csv, read_transactions_excel
 from src.processing import filter_by_state, sort_by_date
 from src.search import process_bank_search
 from src.utils import read_transactions
+from src.formatters import format_transaction
 
 
 def main() -> None:
@@ -57,8 +58,11 @@ def main() -> None:
 
     # вывод
     print("Распечатываю итоговый список транзакций...")
+
     print(f"\nВсего банковских операций в выборке: {len(transactions)}\n")
+    print("Распечатываю итоговый список транзакций...")
+    print(f"\nВсего банковских операций в выборке: {len(transactions)}\n")
+
     for tx in transactions:
-        print(f"{tx.get('date', '')} {tx.get('description', '')}")
-        print(f"Сумма: {tx.get('operationAmount', {}).get('amount')} "
-              f"{tx.get('operationAmount', {}).get('currency', {}).get('code')}\n")
+        print(format_transaction(tx))
+        print()  # пустая строка между транзакциями
