@@ -47,7 +47,8 @@ def main() -> None:
 
     # только рублевые
     if input("Выводить только рублевые транзакции? Да/Нет ").lower() == "да":
-        transactions = [tx for tx in transactions if tx.get("operationAmount", {}).get("currency", {}).get("code") == "RUB"]
+        transactions = [tx for tx in transactions if tx.get("operationAmount",
+                        {}).get("currency", {}).get("code") == "RUB"]
 
     # поиск по слову
     if input("Отфильтровать список транзакций по слову в описании? Да/Нет ").lower() == "да":
