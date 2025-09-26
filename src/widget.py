@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any
-
+from src.masks import get_mask_card_number, get_mask_account
 
 def get_date(date_str: str) -> str:
     """
@@ -27,3 +27,22 @@ def get_date(date_str: str) -> str:
         except Exception:
             # если всё плохо — вернём строку как есть
             return date_str
+
+
+def mask_account_card(value: str) -> str:
+    """
+    Универсальная функция маскирования:
+    - Если это счёт (начинается со слова 'Счет'), используем get_mask_account.
+    - Иначе пробуем get_mask_card_number.
+    """
+    if not isinstance(value, str):
+        return value
+
+    if value.strip().lower().startswith("счет"):
+        # оставляем "Счет " и маскируем только цифры
+        number = value.split()[-1]
+        return "Счет " + get_mask_account(number)
+    else:
+        # карта или другая строка
+        number = value.split()[-1]
+        return value.replace(number, get_mask_card_number(number))
