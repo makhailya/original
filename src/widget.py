@@ -1,38 +1,29 @@
-import datetime
-
-from src.masks import get_mask_account, get_mask_card_number
-
-"""
-Модуль для отображения информации о картах и счетах
-с использованием маскировки номеров.
-"""
-
-
-def mask_account_card(info: str) -> str:
-    """
-    Маскирует номер карты или счета в зависимости от входной строки.
-    """
-    try:
-        parts = info.split()
-        number = parts[-1]  # последний элемент всегда номер
-        name = " ".join(parts[:-1])  # всё, кроме номера — это название
-
-        if info.startswith("Счет"):
-            masked_number = get_mask_account(number)
-        else:
-            masked_number = get_mask_card_number(number)
-
-        return f"{name} {masked_number}"
-    except Exception:
-        return info  # если что-то пошло не так, вернуть исходное значение
+from datetime import datetime
+from typing import Any
 
 
 def get_date(date_str: str) -> str:
     """
-    Преобразует дату из формата ISO в формат "ДД.MM.ГГГГ".
+    Преобразует дату из ISO-строки в формат 'ДД.ММ.ГГГГ'.
+    Если парсинг неудачен — возвращает исходную строку.
     """
+    if not date_str or not isinstance(date_str, str):
+        return ""
     try:
-        date_obj = datetime.datetime.fromisoformat(date_str)
-        return date_obj.strftime("%d.%m.%Y")
+        # Если есть 'T' — берём только часть до T (дата)
+        if "T" in date_str:
+            date_part = date_str.split("T", 1)[0]
+            d = datetime.fromisoformat(date_part)
+            return d.strftime("%d.%m.%Y")
+        # попытка распарсить как YYYY-MM-DD
+        d = datetime.fromisoformat(date_str)
+        return d.strftime("%d.%m.%Y")
     except Exception:
-        return date_str  # если не дата — вернуть как есть
+        try:
+            # последний шанс: взять первые 10 символов и распарсить
+            date_part = date_str[:10]
+            d = datetime.strptime(date_part, "%Y-%m-%d")
+            return d.strftime("%d.%m.%Y")
+        except Exception:
+            # если всё плохо — вернём строку как есть
+            return date_str
