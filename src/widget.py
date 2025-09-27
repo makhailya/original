@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 from src.masks import get_mask_card_number, get_mask_account
 
+
 def get_date(date_str: str) -> str:
     """
     Преобразует дату из ISO-строки в формат 'ДД.ММ.ГГГГ'.
