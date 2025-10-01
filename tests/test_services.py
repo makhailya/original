@@ -2,7 +2,7 @@
 import json
 import pytest
 import logging
-from src.services import investment_bank
+from src.services import investment_bank, simple_search
 
 
 @pytest.fixture
@@ -55,3 +55,44 @@ def test_investment_bank_logs_error(sample_transactions, caplog):
     # Должна быть ошибка по транзакции с "Дата операции": "ошибка"
     error_logs = [rec for rec in caplog.records if rec.levelname == "ERROR"]
     assert any("ошибка" in rec.message for rec in error_logs)
+
+
+@pytest.fixture
+def sample_transactions_search():
+    return [
+        {"Дата операции": "2025-09-01", "Категория": "Супермаркеты", "Описание": "Лента"},
+        {"Дата операции": "2025-09-05", "Категория": "Фастфуд", "Описание": "Макдональдс"},
+        {"Дата операции": "2025-09-07", "Категория": "Развлечения", "Описание": "Кинотеатр"},
+        {"Дата операции": "2025-09-10", "Категория": "Переводы", "Описание": "Валерий А."},
+    ]
+
+
+def test_simple_search_by_category(sample_transactions_search):
+    result = simple_search("Супермаркеты", sample_transactions_search)
+    data = json.loads(result)
+
+    assert len(data) == 1
+    assert data[0]["Описание"] == "Лента"
+
+
+def test_simple_search_by_description(sample_transactions_search):
+    result = simple_search("кино", sample_transactions_search)  # проверка нечувствительности к регистру
+    data = json.loads(result)
+
+    assert len(data) == 1
+    assert data[0]["Категория"] == "Развлечения"
+
+
+def test_simple_search_no_results(sample_transactions_search):
+    result = simple_search("Аптека", sample_transactions_search)
+    data = json.loads(result)
+
+    assert data == []
+
+
+def test_simple_search_empty_query_logs_warning(sample_transactions_search, caplog):
+    with caplog.at_level(logging.WARNING):
+        result = simple_search("", sample_transactions_search)
+
+    assert json.loads(result) == []
+    assert any("Запрос пустой" in rec.message for rec in caplog.records)
