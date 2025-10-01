@@ -7,6 +7,7 @@ from typing import Any, Dict, List
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
+
 def investment_bank(month: str, transactions: List[Dict[str, Any]], limit: int) -> str:
     """
     Рассчитывает сумму, которую можно накопить в 'Инвесткопилке'
@@ -40,4 +41,29 @@ def investment_bank(month: str, transactions: List[Dict[str, Any]], limit: int) 
 
     result = {"month": month, "saved": round(saved_amount, 2)}
     logger.debug("Инвесткопилка: %s", result)
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+def simple_search(query: str, transactions: List[Dict[str, Any]]) -> str:
+    """
+    Ищет транзакции, где query встречается в описании или категории.
+
+    Args:
+        query (str): строка для поиска
+        transactions (list[dict]): список транзакций
+
+    Returns:
+        str: JSON со списком найденных транзакций
+    """
+    if not query:
+        logger.warning("Запрос пустой")
+        return json.dumps([])
+
+    result = [
+        tx for tx in transactions
+        if query.lower() in str(tx.get("Описание", "")).lower()
+           or query.lower() in str(tx.get("Категория", "")).lower()
+    ]
+
+    logger.info("Найдено %s транзакций по запросу '%s'", len(result), query)
     return json.dumps(result, ensure_ascii=False, indent=2)
