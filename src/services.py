@@ -60,8 +60,8 @@ def simple_search(query: str, transactions: List[Dict[str, Any]]) -> str:
 
     result = [
         tx for tx in transactions
-        if query.lower() in str(tx.get("Описание", "")).lower()
-           or query.lower() in str(tx.get("Категория", "")).lower()
+        if (query.lower() in str(tx.get("Описание", "")).lower()
+            or query.lower() in str(tx.get("Категория", "")).lower())
     ]
 
     logger.info("Найдено %s транзакций по запросу '%s'", len(result), query)
