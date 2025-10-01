@@ -1,7 +1,9 @@
 import json
+
 import pandas as pd
 import pytest
-from src.views import main_page, greeting_by_time
+
+from src.views import greeting_by_time, main_page
 
 
 @pytest.fixture

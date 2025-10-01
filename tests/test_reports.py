@@ -1,8 +1,10 @@
 import json
+from unittest.mock import patch
+
 import pandas as pd
 import pytest
-from unittest.mock import patch
-from src.reports import spending_by_category, save_report
+
+from src.reports import save_report, spending_by_category
 
 
 @pytest.fixture

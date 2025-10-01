@@ -1,9 +1,10 @@
 # src/views.py
 import json
 import logging
-import pandas as pd
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any, Dict
+
+import pandas as pd
 
 from src.utils import get_currency_rates, get_stock_prices
 

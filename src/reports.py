@@ -1,9 +1,10 @@
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, Callable
-import pandas as pd
 from functools import wraps
+from typing import Callable, Optional
+
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 

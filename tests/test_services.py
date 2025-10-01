@@ -1,6 +1,8 @@
 import json
-import pytest
 import logging
+
+import pytest
+
 from src.services import investment_bank, simple_search
 
 

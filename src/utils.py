@@ -2,7 +2,7 @@ import json
 import logging
 import random
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
