@@ -1,6 +1,7 @@
 # tests/test_services.py
 import json
 import pytest
+import logging
 from src.services import investment_bank
 
 
@@ -14,10 +15,10 @@ def sample_transactions():
         {"Дата операции": "ошибка", "Сумма операции": 100},       # некорректная дата
     ]
 
+
 def test_investment_bank_basic(sample_transactions):
     result = investment_bank("2025-09", sample_transactions, 50)
     data = json.loads(result)
-
 
     assert data["month"] == "2025-09"
     # Проверяем округления:
@@ -45,3 +46,12 @@ def test_investment_bank_no_transactions():
 
     assert data["month"] == "2025-07"
     assert data["saved"] == 0.0
+
+
+def test_investment_bank_logs_error(sample_transactions, caplog):
+    with caplog.at_level(logging.ERROR):
+        investment_bank("2025-09", sample_transactions, 50)
+
+    # Должна быть ошибка по транзакции с "Дата операции": "ошибка"
+    error_logs = [rec for rec in caplog.records if rec.levelname == "ERROR"]
+    assert any("ошибка" in rec.message for rec in error_logs)
