@@ -1,38 +1,38 @@
-"""
-Модуль для маскировки номеров карт и счетов.
-"""
+import logging
+
+# Настройка логирования
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+file_handler = logging.FileHandler("logs/masks.log", mode="w", encoding="utf-8")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 def get_mask_card_number(card_number: str) -> str:
     """
-    Возвращает маску для номера банковской карты.
-
-    Первые 6 и последние 4 цифры остаются видимыми,
-    а остальные заменяются на звездочки.
-    Формат: XXXX XX** **** XXXX
-
-    :param card_number: Полный номер карты в виде строки.
-    :return: Маскированный номер карты.
+    Маскирует номер карты.
+    Первые 6 и последние 4 цифры остаются видимыми.
     """
     if len(card_number) < 10 or not card_number.isdigit():
+        logger.error("Некорректный номер карты: %s", card_number)
         raise ValueError("Некорректный номер карты")
 
-    first_six = card_number[:6]
-    last_four = card_number[-4:]
-    return f"{first_six[:4]} {first_six[4:]}** **** {last_four}"
+    masked = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
+    logger.debug("Маскирование карты %s -> %s", card_number, masked)
+    return masked
 
 
 def get_mask_account(account_number: str) -> str:
     """
-    Возвращает маску для номера банковского счета.
-
-    Показывает только последние 4 цифры с двумя звездочками перед ними.
-    Формат: **XXXX
-
-    :param account_number: Полный номер счета в виде строки.
-    :return: Маскированный номер счета.
+    Маскирует номер счёта.
+    Показывает только последние 4 цифры.
     """
     if len(account_number) < 4 or not account_number.isdigit():
-        raise ValueError("Некорректный номер счета")
+        logger.error("Некорректный номер счёта: %s", account_number)
+        raise ValueError("Некорректный номер счёта")
 
-    return f"**{account_number[-4:]}"
+    masked = f"**{account_number[-4:]}"
+    logger.debug("Маскирование счёта %s -> %s", account_number, masked)
+    return masked
