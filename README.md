@@ -102,3 +102,14 @@ print(divide(10, 2))   # => 5.0
 
 # Логирование в файл app.log
 print(multiply(3, 4))  # => 12
+
+## 📊 Работа с файлами CSV и Excel
+
+Поддержка чтения транзакций из разных форматов данных:
+
+### CSV
+```python
+from src.file_reader import read_transactions_csv
+
+transactions = read_transactions_csv("data/transactions.csv")
+print(transactions)
