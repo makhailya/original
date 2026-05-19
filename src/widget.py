@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import Any
-from src.masks import get_mask_card_number, get_mask_account
+
+from src.masks import get_mask_account, get_mask_card_number
+
 
 def get_date(date_str: str) -> str:
     """

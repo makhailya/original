@@ -1,6 +1,7 @@
 from typing import Any, Dict
-from src.widget import get_date
+
 from src.widget import mask_account_card  # или: from src.widget import mask_account_card
+from src.widget import get_date
 
 
 def _safe_mask(value: Any) -> str:
