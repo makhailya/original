@@ -1,7 +1,6 @@
 import os
-from typing import Any
-
 import requests
+from typing import Any
 from dotenv import load_dotenv
 
 load_dotenv()

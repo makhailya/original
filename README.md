@@ -1,115 +1,157 @@
 # Учебный проект по Python
+
 # 📌 Project: Bank Data Processing
 
 ## 🎯 Цель проекта
 
 Проект предназначен для обработки банковских данных:
-- маскировка номеров карт и счетов;
-- фильтрация операций по статусу (`EXECUTED`, `CANCELED` и др.);
-- сортировка операций по дате;
-- преобразование даты в удобочитаемый формат.
+	•	маскировка номеров карт и счетов;
+	•	фильтрация операций по статусу (EXECUTED, CANCELED и др.);
+	•	сортировка операций по дате;
+	•	преобразование даты в удобочитаемый формат;
+	•	работа с JSON, CSV и XLSX файлами с транзакциями;
+	•	конвертация валют через внешний API;
+	•	поиск транзакций по описанию с помощью регулярных выражений;
+	•	подсчёт количества операций по категориям;
+	•	логирование работы функций и модулей.
 
 ---
 
 ## 📂 Описание проекта
 
-Проект включает функции для:
-- маскирования номеров карт и счетов;
-- форматирования дат;
-- фильтрации и сортировки операций по дате и состоянию.
-
 ### Модули проекта
-- `masks` — маскирование карт и счетов;
-- `widget` — работа с данными карт/счетов и форматирование даты;
-- `processing` — фильтрация и сортировка операций.
+
+	•	masks — маскирование карт и счетов;
+	•	widget — работа с данными карт/счетов и форматирование даты;
+	•	processing — фильтрация и сортировка операций;
+	•	utils — чтение транзакций из JSON;
+	•	file_reader — чтение транзакций из CSV и XLSX;
+	•	external_api — конвертация валют с использованием API;
+	•	decorators — декораторы для логирования функций;
+	•	generators — генераторы для работы с транзакциями и номерами карт;
+	•	search — поиск транзакций по описанию и подсчёт операций по категориям;
+	•	main — основной модуль, связывающий функциональности между собой.
 
 ---
 
 ## ⚙️ Использование функций
 
-### Маскирование карты
-```python
-from masks import get_mask_card_number
+### 🔒 Маскирование карт и счетов
 
-masked_card = get_mask_card_number("7000792289606361")
-print(masked_card)  # 7000 79** **** 6361
+```python
+
+from src.masks import get_mask_card_number, get_mask_account
+
+print(get_mask_card_number("7000792289606361"))  
+# 7000 79** **** 6361
+
+print(get_mask_account("73654108430135874305"))  
+# **4305
 
 ---
 
+###📄 Чтение данных из файлов
+
+```python
+from src.utils import read_transactions
+from src.file_reader import read_transactions_csv, read_transactions_excel
+
+print(read_transactions("data/operations.json"))  
+print(read_transactions_csv("data/transactions.csv"))  
+print(read_transactions_excel("data/transactions_excel.xlsx"))  
+
+---
+
+###💱 Конвертация валют
+
+```python
+from src.external_api import convert_to_rub
+
+transaction = {
+    "operationAmount": {
+        "amount": "100",
+        "currency": {"code": "USD"}
+    }
+}
+print(convert_to_rub(transaction))
+# 100 * <курс USD к рублю>
+ 
+ ---
+ 
+ ###🔍 Поиск транзакций по описанию
+ 
+ ```python
+ from src.search import process_bank_search
+
+data = [
+    {"description": "Открытие вклада"},
+    {"description": "Перевод с карты на карту"},
+]
+
+print(process_bank_search(data, "вклад"))  
+# [{'description': 'Открытие вклада'}]
+
+---
+
+###📊 Подсчёт количества операций по категориям
+
+```python
+from src.search import process_bank_operations
+
+data = [
+    {"description": "Открытие вклада"},
+    {"description": "Перевод с карты на карту"},
+    {"description": "Перевод организации"},
+]
+
+print(process_bank_operations(data, ["Открытие", "Перевод"]))  
+# {'Открытие': 1, 'Перевод': 2}
+
+---
+
+###🌀 Генераторы
+
+```python
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+
+# Фильтрация по валюте
+usd_transactions = filter_by_currency(transactions, "USD")
+print(next(usd_transactions))
+
+# Описания транзакций
+descriptions = transaction_descriptions(transactions)
+print(next(descriptions))
+
+# Генерация номеров карт
+for card in card_number_generator(1, 3):
+    print(card)
+# 0000 0000 0000 0001
+# 0000 0000 0000 0002
+# 0000 0000 0000 0003
+
+---
+##🚀 Основная программа
+
+В модуле main реализован интерактивный интерфейс:
+	1.	Выбор источника данных (JSON, CSV, XLSX).
+	2.	Фильтрация по статусу (EXECUTED, CANCELED, PENDING).
+	3.	Сортировка по дате (по возрастанию/убыванию).
+	4.	Фильтрация только рублевых транзакций.
+	5.	Поиск по ключевому слову в описании.
+	6.	Вывод итогового списка транзакций.
+	
+	Пример запуска:
+	```bash
+	poetry run python main.py
+	---
+	
 ## ✅ Тестирование
 
-В проекте используется библиотека **pytest** для модульного тестирования.
-
-### Покрытие тестами
-Тестами проверяются функции:
-- `get_mask_card_number`
-- `get_mask_account`
-- `mask_account_card`
-- `get_date`
-- `filter_by_state`
-- `sort_by_date`
-
-### Запуск тестов
-Установите зависимости:
-```bash
-pip install -r requirements.txt
----
-
-## 🌀 Generators
-
-В проекте реализован модуль `generators`, содержащий удобные генераторы для работы с транзакциями и номерами карт.
-
-### `filter_by_currency`
-Фильтрация транзакций по валюте:
-```python
-from generators import filter_by_currency
-
-usd_transactions = filter_by_currency(transactions, "USD")
-for tx in usd_transactions:
-    print(tx)
-## Тестирование и покрытие кода
-
-Для запуска тестов используется `pytest` с плагином `pytest-cov`.
-
-### Установка зависимостей
-```bash
-pip install pytest pytest-cov
-
----
-
-## 📝 Декоратор `log`
-
-В проекте реализован модуль `decorators`, содержащий декоратор `log`.  
-Декоратор используется для логирования работы функций:  
-- по умолчанию выводит логи в консоль;  
-- при передаче аргумента `filename` записывает их в указанный файл;  
-- если функция завершилась с ошибкой, в лог добавляется сообщение об ошибке и входные параметры.
-
-### Пример использования
-```python
-from decorators.log import log
-
-@log()
-def divide(a, b):
-    return a / b
-
-@log(filename="app.log")
-def multiply(a, b):
-    return a * b
-
-# Логирование в консоль
-print(divide(10, 2))   # => 5.0
-
-# Логирование в файл app.log
-print(multiply(3, 4))  # => 12
-
-## 📊 Работа с файлами CSV и Excel
-
-Поддержка чтения транзакций из разных форматов данных:
-
-### CSV
-```python
-from src.file_reader import read_transactions_csv
-
-transactions = read_transactions_csv("data/transactions.csv")
-print(transactions)
+	•	Используется pytest и pytest-cov.
+	•	Покрытие тестами более 80%.
+	•	Есть htmlcov/ — отчёт о покрытии тестами.
+	
+	Запуск тестов:
+	```bash
+	poetry run pytest --cov=src --cov-report=html
+	---
