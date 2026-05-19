@@ -11,15 +11,18 @@ def get_mask_card_number(card_number: str) -> str:
     а остальные заменяются на звездочки.
     Формат: XXXX XX** **** XXXX
 
+    Если номер слишком короткий (меньше 10 цифр), возвращается как есть.
+
     :param card_number: Полный номер карты в виде строки.
-    :return: Маскированный номер карты.
+    :return: Маскированный номер карты или исходный номер, если он слишком короткий.
     """
-    if len(card_number) < 10 or not card_number.isdigit():
+    if not card_number.isdigit():
         raise ValueError("Некорректный номер карты")
 
-    first_six = card_number[:6]
-    last_four = card_number[-4:]
-    return f"{first_six[:4]} {first_six[4:]}** **** {last_four}"
+    if len(card_number) < 10:  # слишком короткий номер — не маскируем
+        return card_number
+
+    return f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
 
 
 def get_mask_account(account_number: str) -> str:
@@ -29,10 +32,15 @@ def get_mask_account(account_number: str) -> str:
     Показывает только последние 4 цифры с двумя звездочками перед ними.
     Формат: **XXXX
 
+    Если номер слишком короткий (меньше 4 цифр), возвращается как есть.
+
     :param account_number: Полный номер счета в виде строки.
-    :return: Маскированный номер счета.
+    :return: Маскированный номер счета или исходный номер, если он слишком короткий.
     """
-    if len(account_number) < 4 or not account_number.isdigit():
+    if not account_number.isdigit():
         raise ValueError("Некорректный номер счета")
+
+    if len(account_number) < 4:  # слишком короткий номер — не маскируем
+        return account_number
 
     return f"**{account_number[-4:]}"
